@@ -10,6 +10,11 @@ app.get('/', (req, res) => {
 
 app.get('/trains', (req, res) => {
 	fs.readFile('./data/trains.json', 'utf8', (err, data) => {
+		if (err) {
+			res.status(500).send('Error reading trains.json');
+			return;
+		}
+
 		const jsonData = JSON.parse(data);
 		res.json(jsonData);
 	});
