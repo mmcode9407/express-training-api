@@ -35,7 +35,7 @@ app.post('/trains', (req, res) => {
 
 	for (const field of requiredFields) {
 		if (!newData[field]) {
-			return res.status(400).send(`Brak wymaganego pola: ${field}`);
+			return res.status(400).send(`Required field is missing: ${field}`);
 		}
 	}
 
