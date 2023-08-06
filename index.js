@@ -23,7 +23,21 @@ app.get('/trains', (req, res) => {
 });
 
 app.post('/trains', (req, res) => {
+	const requiredFields = [
+		'trainExpressName',
+		'countryOfOrigin',
+		'yearOfConstruction',
+		'maxKilometerPerHour',
+		'destinationFrom',
+		'destinationTo',
+	];
 	const newData = req.body;
+
+	for (const field of requiredFields) {
+		if (!newData[field]) {
+			return res.status(400).send(`Brak wymaganego pola: ${field}`);
+		}
+	}
 
 	fs.readFile('./data/trains.json', 'utf8', (err, data) => {
 		if (err) {
