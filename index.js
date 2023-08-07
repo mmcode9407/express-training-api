@@ -119,6 +119,42 @@ app.put('/trains/:id', (req, res) => {
 	});
 });
 
+app.delete('/trains/:id', (req, res) => {
+	const dataId = parseInt(req.params.id);
+
+	fs.readFile('./data/trains.json', 'utf8', (err, data) => {
+		if (err) {
+			res.status(500).send('Error reading trains.json');
+			return;
+		}
+
+		const jsonData = JSON.parse(data);
+
+		const existingDataItem = jsonData.find(
+			(item) => parseInt(item.id) === dataId
+		);
+
+		if (!existingDataItem) {
+			res.status(404).send('Item with given ID not found.');
+		}
+
+		const remainData = jsonData.filter((el) => parseInt(el.id) !== dataId);
+
+		fs.writeFile(
+			'./data/trains.json',
+			JSON.stringify(remainData, null, 2),
+			(err) => {
+				if (err) {
+					res.status(500).send('Error saving data to trains.json');
+					return;
+				}
+
+				res.status(204).send();
+			}
+		);
+	});
+});
+
 app.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
 });
