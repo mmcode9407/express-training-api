@@ -99,7 +99,9 @@ app.put('/trains/:id', (req, res) => {
 		}
 
 		for (const field of fieldsToUpdate) {
-			existingDataItem[field] = newData[field] || existingDataItem[field];
+			existingDataItem[field] = newData.hasOwnProperty(field)
+				? newData[field]
+				: existingDataItem[field];
 		}
 
 		fs.writeFile(
