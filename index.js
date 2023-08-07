@@ -149,7 +149,7 @@ app.delete('/trains/:id', (req, res) => {
 					return;
 				}
 
-				res.status(201).send('Successfully delete the data.');
+				res.status(204).send();
 			}
 		);
 	});
