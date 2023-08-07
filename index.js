@@ -70,6 +70,53 @@ app.post('/trains', (req, res) => {
 	});
 });
 
+app.put('/trains/:id', (req, res) => {
+	const fieldsToUpdate = [
+		'trainExpressName',
+		'countryOfOrigin',
+		'yearOfConstruction',
+		'maxKilometerPerHour',
+		'destinationFrom',
+		'destinationTo',
+	];
+	const dataId = parseInt(req.params.id);
+	const newData = req.body;
+
+	fs.readFile('./data/trains.json', 'utf8', (err, data) => {
+		if (err) {
+			res.status(500).send('Error reading trains.json');
+			return;
+		}
+
+		const jsonData = JSON.parse(data);
+
+		const existingDataItem = jsonData.find(
+			(item) => parseInt(item.id) === dataId
+		);
+
+		if (!existingDataItem) {
+			res.status(404).send('Item with given ID not found.');
+		}
+
+		for (const field of fieldsToUpdate) {
+			existingDataItem[field] = newData[field] || existingDataItem[field];
+		}
+
+		fs.writeFile(
+			'./data/trains.json',
+			JSON.stringify(jsonData, null, 2),
+			(err) => {
+				if (err) {
+					res.status(500).send('Error saving data to trains.json');
+					return;
+				}
+
+				res.json(existingDataItem);
+			}
+		);
+	});
+});
+
 app.listen(PORT, () => {
 	console.log(`Server listening on port ${PORT}`);
 });
